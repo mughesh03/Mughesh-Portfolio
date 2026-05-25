@@ -1,0 +1,58 @@
+* { box-sizing: border-box; }
+body { margin: 0; color: #0f172a; }
+a { color: inherit; }
+img { max-width: 100%; display: block; }
+p, .description { white-space: pre-wrap; }
+.linked-title { color: inherit; text-decoration: none; }
+.linked-title:hover { text-decoration: underline; }
+.contact-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; align-items: center; }
+.contact-row a, .contact-row span { display: inline-flex; align-items: center; gap: 6px; text-decoration: none; }
+.contact-icon { display: inline-grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; color: white; }
+.credential-card { display: grid; grid-template-columns: 1fr 110px; gap: 18px; padding: 22px; align-items: start; }
+.credential-body { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.credential-title { font-size: 20px; letter-spacing: -0.02em; font-weight: 800; }
+.credential-side { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+.credential-logo { width: 84px; height: 84px; object-fit: cover; }
+.credential-logo.rounded { border-radius: 18px; }
+.credential-logo.circle { border-radius: 50%; }
+.credential-logo.square { border-radius: 4px; }
+.credential-desc { line-height: 1.65; }
+.acc-item { border-radius: 14px; padding: 18px 22px; }
+.acc-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; cursor: pointer; }
+.acc-head .acc-title { font-weight: 800; letter-spacing: -0.02em; }
+.acc-head .acc-date { font-weight: 700; }
+.acc-toggle { transition: transform 0.2s ease; }
+details[open] .acc-toggle { transform: rotate(180deg); }
+.acc-body { padding-top: 14px; display: flex; flex-direction: column; gap: 12px; }
+.acc-media { width: 100%; max-height: 460px; overflow: hidden; border-radius: 14px; display: grid; place-items: center; }
+.acc-media img { width: 100%; max-height: 460px; object-fit: contain; }
+@media (max-width: 700px) {
+  .credential-card { grid-template-columns: 1fr; }
+  .credential-side { flex-direction: row; align-items: center; justify-content: space-between; width: 100%; }
+}
+
+body { font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; background: linear-gradient(135deg, #f5f3ff, #ecfeff); }
+main { width: min(1180px, calc(100% - 32px)); margin: 0 auto; padding: 64px 0; }
+.hero { display: grid; grid-template-columns: 1.3fr .8fr; gap: 32px; align-items: center; min-height: 78vh; }
+.hero img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 36px; box-shadow: 0 30px 80px rgba(15,23,42,.18); }
+.pill { display:inline-flex; align-items:center; padding: 9px 14px; border-radius: 999px; background: white; color: #7c3aed; font-weight: 800; box-shadow: 0 12px 30px rgba(15,23,42,.08); }
+h1 { font-size: clamp(48px, 8vw, 110px); line-height: .9; letter-spacing: -0.07em; margin: 18px 0; }
+h2 { color: #7c3aed; font-size: clamp(22px, 3vw, 36px); margin: 0 0 16px; }
+p { color: #475569; line-height: 1.7; font-size: 18px; }
+.contact-row a, .contact-row span { padding: 8px 12px; border-radius: 999px; background: rgba(255,255,255,.7); border: 1px solid rgba(15,23,42,.06); font-weight: 700; font-size: 13px; }
+.contact-icon { background: #7c3aed; }
+.section { margin-top: 36px; padding: 28px; border-radius: 36px; background: rgba(255,255,255,.6); backdrop-filter: blur(18px); border: 1px solid rgba(255,255,255,.6); box-shadow: 0 30px 70px rgba(15,23,42,.08); }
+.section h3 { font-size: 32px; letter-spacing: -0.04em; margin: 0 0 22px; }
+.skills span { display: inline-flex; padding: 10px 14px; border-radius: 999px; background: white; color: #7c3aed; font-weight: 800; margin: 4px 6px 0 0; }
+.credentials { display: flex; flex-direction: column; gap: 14px; }
+.credential-card { background: white; border-radius: 22px; box-shadow: 0 18px 60px rgba(15,23,42,.06); }
+.credential-body strong { color: #7c3aed; font-weight: 700; font-size: 14px; }
+.credential-body em { color: #64748b; font-size: 13px; font-style: normal; }
+.credential-desc { color: #475569; font-size: 15px; }
+.credential-date { color: #7c3aed; font-weight: 700; font-size: 13px; }
+.accordion { display: flex; flex-direction: column; gap: 10px; }
+.acc-item { background: white; border: 1px solid rgba(15,23,42,.08); }
+details[open] .acc-item, .acc-item[open] { border-color: #7c3aed; }
+.acc-title { color: #0f172a; font-size: 18px; }
+.acc-date { color: #7c3aed; }
+@media (max-width: 800px) { .hero { grid-template-columns: 1fr; } }
