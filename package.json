@@ -1,20 +1,22 @@
 {
-  "name": "mughesh-kumar",
+  "name": "mughesh-portfolio",
   "private": true,
-  "version": "1.0.0",
+  "version": "2.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview --host"
   },
   "dependencies": {
-    "react": "latest",
-    "react-dom": "latest",
-    "framer-motion": "latest"
+    "dompurify": "3.1.7",
+    "framer-motion": "11.11.17",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "three": "^0.170.0"
   },
   "devDependencies": {
-    "vite": "latest",
-    "@vitejs/plugin-react": "latest"
+    "@vitejs/plugin-react": "4.3.4",
+    "vite": "5.4.11"
   }
 }
