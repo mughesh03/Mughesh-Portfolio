@@ -1,17 +1,19 @@
 # Mughesh Kumar — Portfolio
 
-A cinematic, single-page portfolio built with React 18, Vite, and Framer Motion.
+A single-page portfolio built with React 18, Vite, Three.js, and Framer Motion.
 
 ## Features
 
-- Animated Canvas 2D "video-style" motion background (drifting aurora blobs + starfield + subtle grid pulse)
-- Sticky glassmorphic navigation with active-section highlighting
-- Hero with animated gradient name, orbital portrait rings, and scroll cue
-- Timeline layout for experience and education
-- 3D-tilt project cards with cursor-tracked glow
-- Expandable publications & awards
+- Light theme over a Three.js field of multi-colour round beads (`src/DottedSurface.jsx`)
+- Floating bottom dock for navigation, with active-section highlighting
+- Hero with a letter-by-letter name reveal, rotating interests, and a round portrait with a spectrum ring
+- Résumé highlight counters (edit `HIGHLIGHTS` in `src/App.jsx`)
+- Skills grouped by category
+- Scroll-drawn timelines for experience and education
+- Text-only project cards, publication cards, and award cards, with all details always visible
+- A separate accent colour for each section
 - Rich-text descriptions sanitized with DOMPurify (safely renders imported HTML)
-- Fully responsive, dark theme
+- Responsive down to phone widths, and respects the reduced-motion setting
 
 ## Run locally
 

@@ -1,25 +1,39 @@
 import React, { useEffect, useRef } from 'react'
 import * as THREE from 'three'
 
+// Must match --bg in styles.css so distant beads fade into the page.
+const PAGE_BG = 0xf5f6fb
+
 /**
- * DottedSurface — Three.js animated grid of dots with sine-wave motion
- * and a multi-color HSL gradient across the surface.
- * Adapted for a Vite + React (JSX, no Tailwind, no next-themes) project.
+ * DottedSurface — a Three.js field of round, multi-colour beads riding a
+ * sine wave. The palette slowly rotates through the spectrum.
+ *
+ * If WebGL is unavailable the component renders nothing, so the page still
+ * works. With "reduce motion" enabled it draws a single still frame.
  */
 export function DottedSurface({ className = '', ...props }) {
   const containerRef = useRef(null)
-  const sceneRef = useRef(null)
 
   useEffect(() => {
-    if (!containerRef.current) return
+    const container = containerRef.current
+    if (!container) return
 
     const SEPARATION = 140
     const AMOUNTX = 44
     const AMOUNTY = 64
+    const reduceMotion =
+      typeof window.matchMedia === 'function' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+    let renderer
+    try {
+      renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true })
+    } catch (err) {
+      return // No WebGL: skip the backdrop, keep the page.
+    }
 
     const scene = new THREE.Scene()
-    // Fog color matches the page paper color so distant dots blend cleanly.
-    scene.fog = new THREE.Fog(0xf7f3e9, 2200, 9000)
+    scene.fog = new THREE.Fog(PAGE_BG, 2200, 9000)
 
     const camera = new THREE.PerspectiveCamera(
       60,
@@ -29,18 +43,13 @@ export function DottedSurface({ className = '', ...props }) {
     )
     camera.position.set(0, 380, 1250)
 
-    const renderer = new THREE.WebGLRenderer({
-      alpha: true,
-      antialias: true,
-    })
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
     renderer.setSize(window.innerWidth, window.innerHeight)
-    renderer.setClearColor(scene.fog.color, 0)
+    renderer.setClearColor(PAGE_BG, 0)
+    container.appendChild(renderer.domElement)
 
-    containerRef.current.appendChild(renderer.domElement)
-
-    // Build a circular sprite texture so each point renders as a soft
-    // round bead instead of the default square.
+    // Circular sprite so every point renders as a soft round bead
+    // rather than the default square.
     const spriteSize = 64
     const spriteCanvas = document.createElement('canvas')
     spriteCanvas.width = spriteSize
@@ -64,16 +73,15 @@ export function DottedSurface({ className = '', ...props }) {
     const colors = []
     const baseHues = []
     const geometry = new THREE.BufferGeometry()
-
-    // Give each dot a base hue from a smooth 2-D gradient across the grid.
-    // We'll rotate the whole palette over time in the animation loop.
     const color = new THREE.Color()
+
     for (let ix = 0; ix < AMOUNTX; ix++) {
       for (let iy = 0; iy < AMOUNTY; iy++) {
-        const x = ix * SEPARATION - (AMOUNTX * SEPARATION) / 2
-        const y = 0
-        const z = iy * SEPARATION - (AMOUNTY * SEPARATION) / 2
-        positions.push(x, y, z)
+        positions.push(
+          ix * SEPARATION - (AMOUNTX * SEPARATION) / 2,
+          0,
+          iy * SEPARATION - (AMOUNTY * SEPARATION) / 2
+        )
         const hue = ((ix / AMOUNTX) * 0.7 + (iy / AMOUNTY) * 0.5) % 1
         baseHues.push(hue)
         color.setHSL(hue, 0.85, 0.55)
@@ -81,14 +89,8 @@ export function DottedSurface({ className = '', ...props }) {
       }
     }
 
-    geometry.setAttribute(
-      'position',
-      new THREE.Float32BufferAttribute(positions, 3)
-    )
-    geometry.setAttribute(
-      'color',
-      new THREE.Float32BufferAttribute(colors, 3)
-    )
+    geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3))
+    geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3))
 
     const material = new THREE.PointsMaterial({
       size: 14,
@@ -101,44 +103,37 @@ export function DottedSurface({ className = '', ...props }) {
       alphaTest: 0.01,
     })
 
-    const points = new THREE.Points(geometry, material)
-    scene.add(points)
+    scene.add(new THREE.Points(geometry, material))
 
     let count = 0
     let animationId = 0
-    const tmpColor = new THREE.Color()
 
-    const animate = () => {
-      animationId = requestAnimationFrame(animate)
-
-      const positionAttribute = geometry.attributes.position
-      const colorAttribute = geometry.attributes.color
-      const posArray = positionAttribute.array
-      const colArray = colorAttribute.array
-
+    const drawFrame = () => {
+      const posArray = geometry.attributes.position.array
+      const colArray = geometry.attributes.color.array
       let i = 0
       for (let ix = 0; ix < AMOUNTX; ix++) {
         for (let iy = 0; iy < AMOUNTY; iy++) {
           const index = i * 3
-          // Sine-wave undulation
           posArray[index + 1] =
             Math.sin((ix + count) * 0.3) * 60 +
             Math.sin((iy + count) * 0.5) * 60
 
-          // Slowly rotate the hue of every dot so the whole surface breathes color
-          const hue = (baseHues[i] + count * 0.006) % 1
-          tmpColor.setHSL(hue, 0.85, 0.55)
-          colArray[index] = tmpColor.r
-          colArray[index + 1] = tmpColor.g
-          colArray[index + 2] = tmpColor.b
-
+          color.setHSL((baseHues[i] + count * 0.006) % 1, 0.85, 0.55)
+          colArray[index] = color.r
+          colArray[index + 1] = color.g
+          colArray[index + 2] = color.b
           i++
         }
       }
-      positionAttribute.needsUpdate = true
-      colorAttribute.needsUpdate = true
-
+      geometry.attributes.position.needsUpdate = true
+      geometry.attributes.color.needsUpdate = true
       renderer.render(scene, camera)
+    }
+
+    const animate = () => {
+      animationId = requestAnimationFrame(animate)
+      drawFrame()
       count += 0.1
     }
 
@@ -146,36 +141,22 @@ export function DottedSurface({ className = '', ...props }) {
       camera.aspect = window.innerWidth / window.innerHeight
       camera.updateProjectionMatrix()
       renderer.setSize(window.innerWidth, window.innerHeight)
+      if (reduceMotion) drawFrame()
     }
 
     window.addEventListener('resize', handleResize)
-    animate()
-
-    sceneRef.current = { scene, camera, renderer, points, animationId, spriteTexture }
+    if (reduceMotion) drawFrame()
+    else animate()
 
     return () => {
       window.removeEventListener('resize', handleResize)
-      if (sceneRef.current) {
-        cancelAnimationFrame(sceneRef.current.animationId)
-        sceneRef.current.scene.traverse((object) => {
-          if (object instanceof THREE.Points) {
-            object.geometry.dispose()
-            if (Array.isArray(object.material)) {
-              object.material.forEach((m) => m.dispose())
-            } else {
-              object.material.dispose()
-            }
-          }
-        })
-        if (sceneRef.current.spriteTexture) sceneRef.current.spriteTexture.dispose()
-        sceneRef.current.renderer.dispose()
-        if (containerRef.current && sceneRef.current.renderer.domElement) {
-          try {
-            containerRef.current.removeChild(
-              sceneRef.current.renderer.domElement
-            )
-          } catch (_) { /* already removed */ }
-        }
+      cancelAnimationFrame(animationId)
+      geometry.dispose()
+      material.dispose()
+      spriteTexture.dispose()
+      renderer.dispose()
+      if (renderer.domElement.parentNode === container) {
+        container.removeChild(renderer.domElement)
       }
     }
   }, [])
@@ -184,7 +165,7 @@ export function DottedSurface({ className = '', ...props }) {
     <div
       ref={containerRef}
       className={'dotted-surface ' + className}
-      aria-hidden
+      aria-hidden="true"
       {...props}
     />
   )
