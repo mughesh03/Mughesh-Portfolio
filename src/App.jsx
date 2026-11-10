@@ -53,6 +53,12 @@ const IconPhone = (p) => <Svg {...p}><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79
 const IconPin = (p) => <Svg {...p}><path d="M20 10c0 7-8 13-8 13s-8-6-8-13a8 8 0 0 1 16 0Z" /><circle cx="12" cy="10" r="3" /></Svg>
 const IconCalendar = (p) => <Svg {...p}><rect x="3" y="5" width="18" height="16" rx="2" /><path d="M3 10h18M8 3v4M16 3v4" /></Svg>
 const IconArrow = (p) => <Svg size={14} strokeWidth="2" {...p}><path d="M7 17 17 7M8 7h9v9" /></Svg>
+const IconDownload = (p) => (
+  <Svg {...p}>
+    <path d="M12 3v10M8 11l4 4 4-4" />
+    <path d="M5 17h14" />
+  </Svg>
+)
 const IconGithub = ({ size = 18 }) => (
   <svg viewBox="0 0 24 24" width={size} height={size} fill="currentColor" aria-hidden="true">
     <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.57.1.78-.25.78-.55v-2.07c-3.2.7-3.87-1.37-3.87-1.37-.52-1.33-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.03 1.76 2.7 1.25 3.36.95.1-.75.4-1.25.73-1.54-2.55-.29-5.23-1.28-5.23-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.51-1.47.11-3.07 0 0 .97-.31 3.17 1.18a10.96 10.96 0 0 1 5.78 0c2.2-1.49 3.17-1.18 3.17-1.18.62 1.6.23 2.78.12 3.07.74.81 1.18 1.84 1.18 3.1 0 4.42-2.69 5.39-5.25 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.66.79.55C20.21 21.38 23.5 17.08 23.5 12 23.5 5.65 18.35.5 12 .5Z" />
@@ -76,6 +82,9 @@ const SECTIONS = [
   { id: 'contact', label: 'Contact', Icon: IconMail, hue: 'violet' }
 ]
 const GROUP_HUES = ['violet', 'blue', 'teal', 'green', 'orange', 'pink', 'amber']
+
+const RESUME_PATH = '/Mughesh_Resume.pdf'
+const RESUME_DOWNLOAD_NAME = 'Mughesh_Kumar_Resume.pdf'
 
 /* ============================ Primitives =========================== */
 
@@ -765,6 +774,13 @@ function Contact({ profile }) {
                 <IconMail size={17} /> {profile.email}
               </a>
             )}
+            <a
+              className="btn btn-ghost btn-lg contact-resume"
+              href={RESUME_PATH}
+              download={RESUME_DOWNLOAD_NAME}
+            >
+              <IconDownload size={17} /> Download résumé
+            </a>
             <div className="contact-icons">
               {profile.linkedin && (
                 <a className="ic-btn" href={ensureHttp(profile.linkedin)} target="_blank" rel="noreferrer noopener" aria-label="LinkedIn"><IconLinkedIn /></a>
@@ -780,6 +796,9 @@ function Contact({ profile }) {
         </motion.div>
         <footer className="footer">
           <span>© {new Date().getFullYear()} {profile.fullName || profile.name.trim()}</span>
+          <a className="footer-resume" href={RESUME_PATH} download={RESUME_DOWNLOAD_NAME}>
+            <IconDownload size={14} /> Download résumé (PDF)
+          </a>
         </footer>
       </div>
     </section>
